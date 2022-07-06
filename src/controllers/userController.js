@@ -45,7 +45,7 @@ const createUser = async function(req, res){
 
         let checkPhone = await userModel.findOne({phone: phone})
         if (checkPhone) {
-            return res.status(409).send({status : false, message : "please enter unique phone number"}) 
+            return res.status(400).send({status : false, message : "please enter unique phone number"}) 
         }
 
         if (!email) {
@@ -58,7 +58,7 @@ const createUser = async function(req, res){
        
         let checkEmail = await userModel.findOne({email:email})
         if (checkEmail) {
-            return res.status(409).send({status : false, message : "please enter unique email"})
+            return res.status(400).send({status : false, message : "please enter unique email"})
         }
 
         if (!password) {
@@ -78,7 +78,7 @@ const createUser = async function(req, res){
         let createUser=await userModel.create(req.body)
         res.status(201).send({status:true, message: "success" , data:createUser})
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         res.status(500).send({status:false, message:error.message})
     }   
 }
@@ -109,8 +109,8 @@ const loginUser= async function (req,res){
         const user=await userModel.findOne({email:email, password:password})
         if(!user){
             return res
-            .status(401)
-            .send({status:false, message: 'invalid login request'})
+            .status(404)
+            .send({status:false, message: 'invalid credentials'})
         }
 
         //it's token time
@@ -121,13 +121,13 @@ const loginUser= async function (req,res){
             organization: "BookManagement",
         },"functioup-radon28")
 
-        res.header('x-api-key', token)
+        res.setHeader('x-api-key', token)
         return res
             .status(200)
             .send({status:true, message: "success", data:token})
 
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         res.status(500).send({status:false, message:error.message})
         
     }
