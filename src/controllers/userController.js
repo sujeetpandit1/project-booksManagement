@@ -1,8 +1,9 @@
 const userModel = require('../models/userModel')
+const jwt=require('jsonwebtoken')
 // const { isValidRequest } = require('../validators/uservalidation')
 const {isValid, isValidRequest, isValidPhone, isValidPassword, isValidEmail,  checkPincode, removeSpace} = require('../validators/userValidation')
 
-
+//--------user created--------//
 const createUser = async function(req, res){
     try {
         let {title, name, phone, email, password, address}= req.body
@@ -32,7 +33,7 @@ const createUser = async function(req, res){
         //     return res.status(400).send({status: false, message : "please give valid input"})
         // }
 
-        removeSpace(name) 
+        // removeSpace(name) 
 
         if (!phone) {
             return res.status(400).send({status: false, message : "phone is missing"})
@@ -77,11 +78,61 @@ const createUser = async function(req, res){
         let createUser=await userModel.create(req.body)
         res.status(201).send({status:true, message: "success" , data:createUser})
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({status:false, message:error.message})
     }   
 }
 
-module.exports={createUser}
+//--------login user--------//
+const loginUser= async function (req,res){
+    try {
+        const login=req.body
+        if(!isValidRequest(req.body)){
+            return res
+            .status(400)
+            .send({status:false, message: 'please enter valid request'})
+
+        }
+        const {email, password}=req.body
+
+        //validation Start
+        if(!isValid(email)){
+            return res
+            .status(400)
+            .send({status:false, message: 'email is missing'})
+        }
+        if(!isValid(password)){
+            return res
+            .status(400)
+            .send({status:false, message: 'password is required'})
+        }
+        const user=await userModel.findOne({email:email, password:password})
+        if(!user){
+            return res
+            .status(401)
+            .send({status:false, message: 'invalid login request'})
+        }
+
+        //it's token time
+
+        const token=jwt.sign({
+            userId:user._id.toString(),
+            batch:"Room-28",
+            organization: "BookManagement",
+        },"functioup-radon28")
+
+        res.header('x-api-key', token)
+        return res
+            .status(200)
+            .send({status:true, message: "success", data:token})
+
+    } catch (error) {
+        // console.log(error);
+        res.status(500).send({status:false, message:error.message})
+        
+    }
+}
+
+module.exports={createUser, loginUser}
 
 
