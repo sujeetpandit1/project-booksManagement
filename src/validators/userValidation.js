@@ -6,12 +6,12 @@ const isValid = function (value) {
 }
 
 const removeSpace = function (value) {
-    return value.split(" ").filter(abc => abc).join(" ")
+    let check = value.split(" ").filter(abc => abc).join(" ")
+     return check
 }
 
 const isValidPhone = function (value) {
     return /^[6789][0-9]{9}$/.test(value)
-    // /^[\+]?[(]?[6-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(value)
 }
 
 const isValidRequest = function (value) {
@@ -24,10 +24,7 @@ const isValidEmail = function(value) {
 }
 
 const isValidPassword = function (password) {
-
-    return /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[!@#$%^&*]){1,})(?!.*\s).{8,15}$/.test(password) 
-
-    // let result1 = password.match(/^[!@#$%^&*]$/) 
+    return /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,15}$/.test(password) 
 }
 
 const checkPincode = function (value) {
