@@ -1,37 +1,99 @@
+/*-----------------------------------------------USER VALIDATION */
 
-const isValid = function (value) {
-    if (typeof value === "undefined" || typeof value === null) return false
-    if (typeof value === "string" && value.trim().length == 0) return false
-    return true 
-}
-
-const removeSpace = function (value) {
-    return value.split(" ").filter(abc => abc).join(" ")
-}
-
-const isValidPhone = function (value) {
-    return /^[6789][0-9]{9}$/.test(value)
-    // /^[\+]?[(]?[6-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(value)
-}
-
-const isValidRequest = function (value) {
-    if (Object.keys(value).length == 0 ) return false
+//title validation
+function isValidTitle(x){
+    if(!x) return false;
+    if(typeof x !== "string") return false;
+    x = x.trim;
+    if(x!=="Mr" || x!=="Mrs" || x!=="Miss") return false;
     return true
 }
 
-const isValidEmail = function(value) {
-    return /^([0-9a-z]([-_\\.]*[0-9a-z]+)*)@([a-z]([-_\\.]*[a-z]+)*)[\\.]([a-z]{2,9})+$/.test(value);
+//name validation
+function isValidName(x){
+    if(!x || typeof x !== "string") return false;
+    const regEx = /^\s*[a-zA-Z]+(\.[a-zA-Z\s]+)*[a-zA-Z\s]{2,64}\s*$/ ;
+    return regEx.test(x);
+}
+// console.log(isValidName("ibrahim khan  "))
+// console.log(isValidName("abc ..def"))
+
+//phone no. validation
+function isValidPhone(x){
+    const regEx = /^\s*(\+[9][1][\-]?)?[6789][0-9]{9}\s*$/;
+    return regEx.test(x);
+}
+// console.log(isValidPhone("8792518031"))
+// console.log(isValidPhone("+91-8792518031"))
+
+//email validation
+function isValidEmail(x){
+    const regEx = /^\s*[a-zA-Z][a-zA-Z0-9]*([-\.\_\+][a-zA-Z0-9]+)*\@[a-zA-Z]+(\.[a-zA-Z]{2,5})*\s*$/;
+    return regEx.test(x)
+}
+// console.log(isValidEmail("ibrah-i.m_9+38@nit.gov.ac.in"))
+// console.log(isValidEmail("qemsiw+58marqfwf17cw@sharklasers.com"))
+
+//password validation
+function isValidPassword(x){
+    const regEx = /^\s*(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,15}\s*$/    ;
+    return regEx.test(x);
+}
+// console.log(isValidPassword("The12345@!@#"))
+
+
+function isValidAddress(x){
+    if(typeof x !== "object") return false;
+    if(Object.keys(x).length === 0) return false;
+    return true
 }
 
-const isValidPassword = function (password) {
+function isValidStreet(x){
+    if(typeof x !== "string") return false;
+    const regEx = /^\s*([\w]+([\s\.\-\:\,][a-zA-Z0-9]+)*){2,64}\s*$/
+    return regEx.test(x);
+}
+// console.log(isValidStreet("ttt:56"))//true
 
-    return /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[!@#$%^&*]){1,})(?!.*\s).{8,15}$/.test(password) 
+//city calidation
+function isValidCity(x){
+    return isValidStreet(x);
+}
+// console.log(isValidCity("ttt:56, a"))//true
 
-    // let result1 = password.match(/^[!@#$%^&*]$/) 
+
+//pincode validation
+function isValidPincode(x){
+    if(typeof x !== "string") return false;
+    const regEx = /^\s*[123456789][0-9]{5}\s*$/
+    return regEx.test(x);
+}
+// console.log(isValidPincode("041226"))//false
+
+//remove spaces
+function removeSpaces(x){
+    return x.split(" ").filter((y)=> y ).join(" ")
+}
+// console.log(removeSpaces("  r  emove      spaces  "))
+
+
+//convert to upperacse
+function trimAndUpperCase(x){
+    x = x.split(" ").filter((y)=> y )
+    return x.map((y)=> y.charAt(0).toUpperCase() + y.slice(1)).join(" ")
 }
 
-const checkPincode = function (value) {
-    return /^[123456789][0-9]{5}$/.test(value)
-}
 
-module.exports = {isValid, isValidRequest,isValidPhone, isValidPassword, removeSpace, isValidEmail,  checkPincode}
+module.exports = {
+                isValidTitle,
+                isValidName,
+                isValidPhone,
+                isValidEmail,
+                isValidPassword,
+                isValidAddress,
+                isValidStreet,
+                isValidCity,
+                isValidPincode,
+                removeSpaces,
+                trimAndUpperCase
+            }
