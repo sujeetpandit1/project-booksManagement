@@ -106,11 +106,11 @@ Return all books sorted by book name in Alphabatical order
 
 const booksByQuery = async function(req, res){
     try{
-        const {userId, category, subcategory} = req.query;
+        const {userId, category, subcategory} = req.query;          console.log(req.query)
         const filters = {isDeleted:false};
         if(userId){filters.userId = userId};
         if(category){filters.category = category};
-        if(subcategory){filters.subcategory ={ $all:[subcategory]}};       //{"locations" : { $all : ["New York", "Texas"]}}
+        if(subcategory){filters.subcategory ={ $all:subcategory.split(",")}};       //{"locations" : { $all : ["New York", "Texas"]}}
     
         if(Object.keys(filters).length === 1) return res.status(400).send({status:false, message: "enter atleast 1 field in query params from userId, category & subCategory"});
     
