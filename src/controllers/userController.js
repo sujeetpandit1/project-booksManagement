@@ -79,8 +79,8 @@ const createUser = async function (req, res) {
         address.city = removeSpace(address.city)
         userObj.address = address
         
-        let createUser = await userModel.create(userObj)
-        return res.status(201).send({ status: true, message: "success", data: createUser })
+        // let createUser = await userModel.create(userObj)
+        return res.status(201).send({ status: true, message: "success", data: userObj })
     } catch (error) {
         console.log(error);
         return res.status(500).send({ status: false, message: error.message })
