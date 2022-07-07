@@ -28,10 +28,6 @@ const createReview = async function (req, res) {
             return res.status(400).send({ status: false, message: "please enter valid objectId" })
         }
 
-        // if (bookId.length != 24) {
-        //     return res.status(400).send({ status: false, message: "please enter proper length of ObjectId (24)" })
-        // }
-
         let checkBook = await bookModel.findOne({ _id: bookId })
 
         if (checkBook.isDeleted == true) {
@@ -43,21 +39,15 @@ const createReview = async function (req, res) {
         }
         objReview.bookId = bookId
 
-        if (!reviewedBy) {
-            return res.status(400).send({ status: false, message: "reviewedBy is missing" })
+        if (reviewedBy) {
+        reviewedBy = removeSpace(reviewedBy)
         }
-
-        if (!isValid(reviewedBy)) {
-            return res.status(400).send({ status: false, message: "please enter a valid reviewer's name" })
-        }
-        objReview.reviewedBy = removeSpace(reviewedBy)
-
+        objReview.reviewedBy = reviewedBy
 
         if (!reviewedAt) {
             return res.status(400).send({ status: false, message: "reviewedAt is missing" })
         }
         objReview.reviewedAt = reviewedAt
-
 
         if (!rating && rating == undefined) {
             return res.status(400).send({ status: false, message: "rating is missing" })
