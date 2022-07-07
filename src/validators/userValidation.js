@@ -1,17 +1,17 @@
 
 const isValid = function (value) {
-    if (typeof value === "undefined" || typeof value === null) return false
+    if (typeof value == "number" || typeof value == "boolean" || value == null ) return false
     if (typeof value === "string" && value.trim().length == 0) return false
     return true 
 }
 
 const removeSpace = function (value) {
-    return value.split(" ").filter(abc => abc).join(" ")
+    let check = value.split(" ").filter(abc => abc).join(" ")
+     return check
 }
 
 const isValidPhone = function (value) {
     return /^[6789][0-9]{9}$/.test(value)
-    // /^[\+]?[(]?[6-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(value)
 }
 
 const isValidRequest = function (value) {
@@ -24,13 +24,7 @@ const isValidEmail = function(value) {
 }
 
 const isValidPassword = function (password) {
-
     return /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,15}$/.test(password) 
-    // (/[A-Za-z][A-Za-z0-9_@#]{8,15}/.test(password))
-    // "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$".test(value) 
-    // /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(value)
-    // (/?=^.{8,15}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/).test(value)
-    // let result1 = password.match(/^[!@#$%^&*]$/) 
 }
 
 const checkPincode = function (value) {
