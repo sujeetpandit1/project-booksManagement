@@ -1,6 +1,5 @@
 const userModel = require('../models/userModel')
 const jwt=require('jsonwebtoken')
-// const { isValidRequest } = require('../validators/uservalidation')
 const {isValid, isValidRequest, isValidPhone, isValidPassword, isValidEmail,  checkPincode, removeSpace} = require('../validators/userValidation')
 
 //--------user created--------//
@@ -28,12 +27,6 @@ const createUser = async function(req, res){
         if (!name) {
             return res.status(400).send({status: false, message : "name is missing"})
         }
-
-        // if (isValid(name)) {
-        //     return res.status(400).send({status: false, message : "please give valid input"})
-        // }
-
-        // removeSpace(name) 
 
         if (!phone) {
             return res.status(400).send({status: false, message : "phone is missing"})
@@ -109,7 +102,7 @@ const loginUser= async function (req,res){
         const user=await userModel.findOne({email:email, password:password})
         if(!user){
             return res
-            .status(404)
+            .status(401)            //401 for authenitication failure
             .send({status:false, message: 'invalid credentials'})
         }
 
