@@ -1,8 +1,7 @@
 const reviewModel = require('../models/reviewModel');
 const bookModel = require('../models/bookModel')
-const ObjectId = require('mongoose').Types.ObjectId;
-const { isValid, isValidRequest, removeSpace } = require('../validators/userValidation');
-const { findOneAndUpdate } = require('../models/reviewModel');
+const { isValid, isValidRequest, isValidObjectId, removeSpace } = require('../validators/userValidation');
+
 
 const createReview = async function (req, res) {
 
@@ -24,7 +23,7 @@ const createReview = async function (req, res) {
             return res.status(400).send({ status: false, message: "bookId is missing" })
         }
 
-        if (!ObjectId.isValid(bookId) || !ObjectId.isValid(id)) {
+        if (!isValidObjectId(bookId) || !isValidObjectId(id)) {
             return res.status(400).send({ status: false, message: "please enter valid objectId" })
         }
 
@@ -75,6 +74,79 @@ const createReview = async function (req, res) {
     }
 }
 
-// reviewedBy me default ka kya krna h guest ka ?
 
-module.exports = { createReview }
+const updateReview = async function (req, res) {
+    try {
+        let { review, rating, reviewedBy } = req.body
+        if (!(review || rating || reviewedBy)) {
+            return res 
+            .status(400)
+            .send({ status: false, message: 'review , rating and reviewedBy, Only these update are allowed' });
+          }
+        let data = req.body;
+        if (!isValidRequest(req.body)) {
+            return res.status(400).send({ status: false, message: "please enter details to update" })
+        }
+        let reviewId = req.params.reviewId;
+        if (!reviewId) {
+            return res.status(400).send({ status: false, message: "id in path param is missing" })
+        }
+
+        let updatedreview = await reviewModel.find({isDeleted: false,})
+            .findOneAndUpdate({ _id: reviewId },
+            {$set: {review:review,rating:rating,reviewedBy:reviewedBy,reviewedAt: Date.now()}},
+            { new: true });
+        if (updatedreview.isDeleted == true) {
+            return res.status(400).send({ status: false, message: "Cannot update review, Book has been already deleted" })
+            }
+     
+        return res
+        .status(200)
+        .send({ status: true, msg: "true", data: updatedreview });
+      } catch (err) {
+        res.status(500).send({ status: false, msg: "Error", error: err.message });
+      }
+    };
+
+
+    
+const deleteReview = async function (req,res){
+    try{
+        let bookId = req.params.bookId
+        let reviewId = req.params.reviewId
+
+        if(! validator.isValidObjectId(bookId)){
+           return res.status(400).send({status:false, message:`${bookId} is not a valid book id `})
+        }
+
+        if(! validator.isValidObjectId(reviewId)){
+            return res.status(400).send({status:false, message:`${reviewId} is not a valid review id `})
+        }
+
+        let checkBookId = await bookModel .findOne({_id:bookId,isDeleted:false})
+
+        if(!checkBookId){
+             return res.status(404).send({status:false,message:"book does not found"})
+        }
+
+         let checkReviewId = await reviewModel.findOne({_id:reviewId, bookId:bookId, isDeleted:false})
+        
+        if(!checkReviewId){
+            return res.status(404).send({status:false,message:"review with this book id is does not exist"})
+         }
+
+        let update = await reviewModel.findOneAndUpdate({_id:reviewId}, {isDeleted:true}, {new:true})
+        let updateReviewCountDerease = await bookModel .findOneAndUpdate({_id:bookId},{reviews:checkBookId.reviews-1},{new:true})
+
+         return res.status(200).send({status:true, message:"Review sucessfully Deleted",update,updateReviewCountDerease})
+
+    }
+    catch(error){
+        res.status(500).send({status:false, error:error.message});
+    }
+}
+
+
+
+
+module.exports = { createReview, updateReview, deleteReview }
