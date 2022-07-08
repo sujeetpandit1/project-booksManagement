@@ -2,16 +2,16 @@
 
 //title validation
 function isValidTitle(x){
-    if(!x) return false;
+    // if(!x) return false;
     if(typeof x !== "string") return false;
     x = x.trim;
-    if(x!=="Mr" || x!=="Mrs" || x!=="Miss") return false;
-    return true
+    if(x==="Mr" || x==="Mrs" || x=="Miss") return true
+    else return true
 }
 
 //name validation
 function isValidName(x){
-    if(!x || typeof x !== "string") return false;
+    // if(typeof x !== "string") return false;
     const regEx = /^\s*[a-zA-Z]+(\.[a-zA-Z\s]+)*[a-zA-Z\s]{2,64}\s*$/ ;
     return regEx.test(x);
 }
@@ -20,11 +20,14 @@ function isValidName(x){
 
 //phone no. validation
 function isValidPhone(x){
+    if(typeof x !== "string") return false          //obs: converting String(+91-8792518031) => -8792518031
     const regEx = /^\s*(\+[9][1][\-]?)?[6789][0-9]{9}\s*$/;
+    // const regEx = /\s*(\+[9][1][\-]?)?[6789][0-9]{9}\s*/;
     return regEx.test(x);
-}
-// console.log(isValidPhone("8792518031"))
-// console.log(isValidPhone("+91-8792518031"))
+}//pending:+91 duplicate saving not resolved
+console.log(isValidPhone("8792518031"))
+console.log(isValidPhone("+91-87925180312sssss"))
+console.log(isValidPhone(+91-8792518031))
 
 //email validation
 function isValidEmail(x){
@@ -50,7 +53,7 @@ function isValidAddress(x){
 
 function isValidStreet(x){
     if(typeof x !== "string") return false;
-    const regEx = /^\s*([\w]+([\s\.\-\:\,][a-zA-Z0-9]+)*){2,64}\s*$/
+    const regEx = /^\s*([\w]+([\s\.\-\:\,][a-zA-Z0-9\s]+)*){2,64}\s*$/
     return regEx.test(x);
 }
 // console.log(isValidStreet("ttt:56"))//true
@@ -83,6 +86,13 @@ function trimAndUpperCase(x){
     return x.map((y)=> y.charAt(0).toUpperCase() + y.slice(1)).join(" ")
 }
 
+//reduce phoneNo
+function reduceNumber(x){
+    return x.slice(x.length-10)
+}
+// console.log(reduceNumber("8792518031"))
+// console.log(reduceNumber("+91-8792518031"))
+// console.log(reduceNumber("+918792518031"))
 
 module.exports = {
                 isValidTitle,
@@ -95,5 +105,6 @@ module.exports = {
                 isValidCity,
                 isValidPincode,
                 removeSpaces,
-                trimAndUpperCase
+                trimAndUpperCase,
+                reduceNumber
             }
