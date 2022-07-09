@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController')
 const bookController = require("../controllers/bookController");
-const {createReview, updateReview} = require('../controllers/reviewController')
+const {createReview, updateReview, deleteReview} = require('../controllers/reviewController')
 
 //user api
 router.post('/register', userController.createUser)
@@ -17,8 +17,8 @@ router.delete('/books/:bookId', bookController.deleteBook)  //delete book by Id
 
 //review api
 router.post('/books/:bookId/review', createReview)
-
-router.post('/books/:bookId/review', updateReview)
+router.put('/books/:bookId/review', updateReview)
+router.delete('/books/:bookId/review', deleteReview)
 
 
 

@@ -11,7 +11,7 @@ const authentication = function(req, res, next){
 
         const decoded = jwt.verify(token, "functioup-radon28", ((err, result)=>{                //vald2
         if(err) return res.status(401).send({status:false, message: "Invalid Token"});
-        // req["decoded"] = decoded
+        req["decoded"] = decoded
         next();
         } ));
     
@@ -26,14 +26,12 @@ const authentication = function(req, res, next){
 //Authorisation-IK
 const authorisation = function(req, res, next){
     try {
-        // console.log(req.decode)
-
         const paramsId = req.params;
         if(!paramsId) return res.status(400).send({status:false, message: "please enter Id in path end"});  //vald1
         if(!mongoose.Types.ObjectId.isValid(paramsId)) return res.status(400).send({staus:false, message: "enter a valid Id"}); //vald2
 
-        const decode = jwt.verify(token, "functionup-radon28");
-        const loggedInUserId = decode.userId;
+        // const decode = jwt.verify(token, "functionup-radon28");
+        const loggedInUserId = req.decoded.userId;
 
         if(loggedInUserId !== paramsId) return res.status(403).send({status:false, message:"You are not authorised to make this request"});
         next();
