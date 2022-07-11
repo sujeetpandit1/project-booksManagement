@@ -28,7 +28,7 @@ const validateUser = async function(req, res, next){
     if(!isValidTitle(data.title))       invalid.titleError = "title is invalid"; 
     if(!isValidName(data.name))         invalid.nameError = "name is invalid"; 
     if(!isValidPhone(data.phone))       invalid.phoneError = "phone is invalid"; 
-    if(!isValidEmail(data.email))       invalid.emailError = "email is invalid"; 
+    if(!isValidEmail(data.email))       invalid.emailError = "email is invalid";    //review
     if(!isValidPassword(data.password)) invalid.passwordError = "password is invalid";
 
     if(data.address && !isValidAddress(data.address)) invalid.addressError = "address is invalid"; 
@@ -50,7 +50,7 @@ const validateUser = async function(req, res, next){
     const emailDoc = await userModel.findOne({email: data.email});
     if(emailDoc) duplicate.emailError = `this ${data.email} is already registered`;
 
-    const num = reduceNumber(data.phone)
+    const num = reduceNumber(data.phone)//+91-8792518031, 8792518031
     const phoneDoc = await userModel.findOne({phone: new RegExp(num + '$')});    
     if(phoneDoc) duplicate.phoneError = `this ${data.phone} is already registered`;
     if(Object.keys(duplicate).length > 0) return res.status(400).send({status:false, message:duplicate});

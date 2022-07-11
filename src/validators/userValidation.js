@@ -8,7 +8,7 @@ function isValidTitle(x){
     if(typeof x !== "string") return false;
     x = x.trim;
     if(x==="Mr" || x==="Mrs" || x=="Miss") return true
-    else return true
+    else return false
 }
 
 //name validation
@@ -40,7 +40,7 @@ function isValidPassword(x){
     const regEx = /^\s*(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,15}\s*$/    ;
     return regEx.test(x);
 }
-
+//review password as per TA instruction.
 
 
 function isValidAddress(x){
@@ -104,18 +104,15 @@ module.exports = {
                 trimAndUpperCase,
                 reduceNumber
             }
-
-            
-module.exports = {
-    isValidTitle,
-    isValidName,
-    isValidPhone,
-    isValidEmail,
-    isValidPassword,
-    isValidAddress,
-    isValidStreet,
-    isValidCity,
-    isValidPincode,
-    isValidABCD,
-}
-// jai sharma
+ module.exports = {
+                isValidTitle,
+                isValidName,
+                isValidPhone,
+                isValidEmail,
+                isValidPassword,
+                isValidAddress,
+                isValidStreet,
+                isValidCity,
+                isValidPincode,
+             test
+            }
