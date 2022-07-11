@@ -14,6 +14,10 @@ router.post('/login', loginUser)
 
 
 
+//review api
+router.post('/books/:bookId/review', createReview)
+router.put('/books/:bookId/review', updateReview)
+router.delete('/books/:bookId/review', deleteReview)
 
 
 
