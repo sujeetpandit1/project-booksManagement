@@ -104,15 +104,3 @@ module.exports = {
                 trimAndUpperCase,
                 reduceNumber
             }
- module.exports = {
-                isValidTitle,
-                isValidName,
-                isValidPhone,
-                isValidEmail,
-                isValidPassword,
-                isValidAddress,
-                isValidStreet,
-                isValidCity,
-                isValidPincode,
-             test
-            }

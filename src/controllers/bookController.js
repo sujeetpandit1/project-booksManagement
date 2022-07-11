@@ -141,7 +141,7 @@ const deleteBook = async function (req, res) {
         return res.status(400).send({status: false, message: "please give book id in path param"})
     }
 
-    if (!ObjectId.isValid(id)) {
+    if (!isValidObjectId(id)) {
         return res.status(400).send({status: false, message: "please enter valid objectId"})
     }
 
