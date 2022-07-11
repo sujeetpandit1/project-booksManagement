@@ -116,8 +116,6 @@ module.exports = {
     isValidStreet,
     isValidCity,
     isValidPincode,
-    removeSpaces,
-    trimAndUpperCase,
-    reduceNumber
+    changes to check
 }
 // jai sharma
