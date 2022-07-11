@@ -1,4 +1,6 @@
-/*-----------------------------------------------USER VALIDATION */
+/*-----------------------------------------------USER VALIDATION-----------------------------------------------*/
+
+const { off } = require("../models/userModel");
 
 //title validation
 function isValidTitle(x){
@@ -15,34 +17,30 @@ function isValidName(x){
     const regEx = /^\s*[a-zA-Z]+(\.[a-zA-Z\s]+)*[a-zA-Z\s]{2,64}\s*$/ ;
     return regEx.test(x);
 }
-// console.log(isValidName("ibrahim khan  "))
-// console.log(isValidName("abc ..def"))
+
 
 //phone no. validation
 function isValidPhone(x){
-    if(typeof x !== "string") return false          //obs: converting String(+91-8792518031) => -8792518031
+    if(typeof x !== "string") return false         
     const regEx = /^\s*(\+[9][1][\-]?)?[6789][0-9]{9}\s*$/;
-    // const regEx = /\s*(\+[9][1][\-]?)?[6789][0-9]{9}\s*/;
     return regEx.test(x);
-}//pending:+91 duplicate saving not resolved
-console.log(isValidPhone("8792518031"))
-console.log(isValidPhone("+91-87925180312sssss"))
-console.log(isValidPhone(+91-8792518031))
+}
+
+
 
 //email validation
 function isValidEmail(x){
     const regEx = /^\s*[a-zA-Z][a-zA-Z0-9]*([-\.\_\+][a-zA-Z0-9]+)*\@[a-zA-Z]+(\.[a-zA-Z]{2,5})*\s*$/;
     return regEx.test(x)
 }
-// console.log(isValidEmail("ibrah-i.m_9+38@nit.gov.ac.in"))
-// console.log(isValidEmail("qemsiw+58marqfwf17cw@sharklasers.com"))
+
 
 //password validation
 function isValidPassword(x){
     const regEx = /^\s*(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,15}\s*$/    ;
     return regEx.test(x);
 }
-// console.log(isValidPassword("The12345@!@#"))
+
 
 
 function isValidAddress(x){
@@ -56,13 +54,13 @@ function isValidStreet(x){
     const regEx = /^\s*([\w]+([\s\.\-\:\,][a-zA-Z0-9\s]+)*){2,64}\s*$/
     return regEx.test(x);
 }
-// console.log(isValidStreet("ttt:56"))//true
+
 
 //city calidation
 function isValidCity(x){
     return isValidStreet(x);
 }
-// console.log(isValidCity("ttt:56, a"))//true
+
 
 
 //pincode validation
@@ -71,13 +69,13 @@ function isValidPincode(x){
     const regEx = /^\s*[123456789][0-9]{5}\s*$/
     return regEx.test(x);
 }
-// console.log(isValidPincode("041226"))//false
+
 
 //remove spaces
 function removeSpaces(x){
     return x.split(" ").filter((y)=> y ).join(" ")
 }
-// console.log(removeSpaces("  r  emove      spaces  "))
+
 
 
 //convert to upperacse
@@ -90,9 +88,7 @@ function trimAndUpperCase(x){
 function reduceNumber(x){
     return x.slice(x.length-10)
 }
-// console.log(reduceNumber("8792518031"))
-// console.log(reduceNumber("+91-8792518031"))
-// console.log(reduceNumber("+918792518031"))
+
 
 module.exports = {
                 isValidTitle,
