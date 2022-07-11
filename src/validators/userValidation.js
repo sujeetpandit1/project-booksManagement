@@ -116,6 +116,6 @@ module.exports = {
     isValidStreet,
     isValidCity,
     isValidPincode,
-    changes to check
+    isValidABCD,
 }
 // jai sharma
