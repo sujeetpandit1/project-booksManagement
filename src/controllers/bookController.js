@@ -24,16 +24,17 @@ Returns all books in the collection that aren't deleted. Return only book _id, t
 Query param can have any combination of below filters. By userId, By category, By subcategory. Return all books sorted by book name in Alphabatical order
 */
 
+
 const booksByQuery = async function(req, res){
     try{
         const {userId, category, subcategory} = req.query;          
         const filters = {isDeleted:false};
+        if (!isValidObjectId(userId)) {return res.status(400).send({status: false, message: "please enter valid user Id"})}
         if(userId){filters.userId = userId};
+
         if(category){filters.category = category};
         if(subcategory){filters.subcategory ={ $all:subcategory.split(",")}};       //{"locations" : { $all : ["New York", "Texas"]}}
-    
-        // if(Object.keys(filters).length === 1) return res.status(400).send({status:false, message: "enter atleast 1 field in query params from userId, category & subCategory"});
-    
+
         const books = await bookModel.find(filters).select({title:1, excerpt:1, userId:1, category:1, releasedAt:1, reviews:1}).sort({title:1});
     
         if(books.length === 0) return res.status(404).send({status:false, message:"No match found"});
@@ -45,6 +46,7 @@ const booksByQuery = async function(req, res){
     }
 
 }
+
 
 
 //------------------------------------Get book By id----------------------------------------------------------------------//
@@ -69,7 +71,7 @@ const getBook = async function (req,res) {
 
 
     if(!savedData || savedData.isDeleted == true) {
-        return res.status(404).send({status: false, message: "no such book exists"}) 
+        return res.status(404).send({status: false, message: "no such book exists or deleted"}) 
     }
 
     let getReview = await reviewModel.find({bookId : id, isDeleted: false})
@@ -83,9 +85,8 @@ const getBook = async function (req,res) {
 }
 }
 
-
-
 //---------------------------------------------updateBook By id----------------------------------------------------------------------//
+
 
 const updateBook = async function (req, res) {
 
@@ -107,17 +108,8 @@ const updateBook = async function (req, res) {
 
         let book = await bookModel.findOne({ _id: bookID, isDeleted: false })
         if (!book) {
-            return res.status(404).send({ status: false, message: 'Book not Found' })
+            return res.status(404).send({ status: false, message: 'Book does not exist or deleted' })
         }
-
-        // let data = req.body
-        // if(!validator.isValidRequestBody(data)) {
-        //     return res.status(400).send({status: false , Message: 'Invalid request parameters. Please provide Book details'})    
-        // }
-
-        // if (!(title || excerpt || ISBN || releasedAt)) {
-        //     return res.status(400).send({ status: false, message: 'Wrong keys are Present, Please enter correct updation keys' });
-        // }
 
         // check duplicate title
         const duplicateTitle = await bookModel.findOne({ title: title })
@@ -131,8 +123,6 @@ const updateBook = async function (req, res) {
             return res.status(400).send({ status: false, message: "ISBN is already exist" })
         }
 
-        // let condition = { _id: bookID, isDeleted: false }
-        // data = { title, excerpt, releasedAt, ISBN }
         let updatedData = await bookModel.findOneAndUpdate({ _id: bookID, isDeleted: false }, { $set: {title:title, excerpt: excerpt, releasedAt:releasedAt, ISBN:ISBN} }, { new: true })
         if (!updatedData) {
             return res.status(404).send({ status: false, message: 'Book with this data not found' })
@@ -144,7 +134,9 @@ const updateBook = async function (req, res) {
     }
 }
 
+
 //------------------------------------------------deleteBook By Id------------------------------------------------------------------//
+
 const deleteBook = async function (req, res) {
     try {
         let id = req.params.bookId
@@ -155,6 +147,11 @@ const deleteBook = async function (req, res) {
 
     if (!isValidObjectId(id)) {
         return res.status(400).send({status: false, message: "please enter valid objectId"})
+    }
+
+    let checkBook = await bookModel.findOne({_id: id})
+    if (!checkBook) {
+        return res.status(404).send({status: false, message: "no such book exists "})
     }
 
     if (id.length != 24) {
@@ -175,6 +172,7 @@ const deleteBook = async function (req, res) {
         return res.status(500).send({ status: false, message: error.message })
     }
 }
+
 
 
 
