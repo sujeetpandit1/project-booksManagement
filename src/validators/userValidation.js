@@ -6,14 +6,14 @@ const { off } = require("../models/userModel");
 function isValidTitle(x){
     // if(!x) return false;
     if(typeof x !== "string") return false;
-    x = x.trim;
+    x = x.trim(); 
     if(x==="Mr" || x==="Mrs" || x=="Miss") return true
     else return false
 }
 
 //name validation
 function isValidName(x){
-    // if(typeof x !== "string") return false;
+    if(typeof x !== "string") return false;
     const regEx = /^\s*[a-zA-Z]+(\.[a-zA-Z\s]+)*[a-zA-Z\s]{2,64}\s*$/ ;
     return regEx.test(x);
 }

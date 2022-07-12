@@ -27,18 +27,31 @@ function isISBN(x){
 function isCategory(x){ return isExcerpt(x)}
 
 //subCategory
-function isSubcategory(x){ return isExcerpt(x)}
+function isSubcategory(x){ 
+    if(!Array.isArray(x)) return false;
+    if(x.length === 0) return false;
+    for(let i=0; i<x.length; i++){
+        if(!x[i]) return false;
+        if(typeof x[i] !== "string") return false;
+        if(x[i].trim().length === 0) return false;
+    }
+    return true
+}
 
 //review validation
 function isReviewCount(x){
     //review count will be updated by server not by user
 }
 
-// function isDate(x){
-//     const reg1 = /^[12][\d]{3}[-][01][\d]-[0123][\d](\s[\d]{2}:[\d]{2}:[\d]{2})?$/
-//     return reg1.test(x)
-// }
-
+function isDate(x){
+    const reg1 = /^[12][\d]{3}[-][01][\d]-[0123][\d](\s[\d]{2}:[\d]{2}:[\d]{2})?$/
+    // const reg1 = /^[12][\d]{3}[-][01][\d]-[0123][\d]$/
+    return reg1.test(x)
+}
+// console.log(isDate("12-07-2022"))
+// console.log(isDate("12-07-2022 13:29:05"))
+// console.log(isDate("2022-12-07"))
+// console.log(isDate("2022-05-07 13:29:05"))
 
 
 const isValid = function (value) {
@@ -64,6 +77,6 @@ const isValidRequest = function (value) {
 }
 
 
-module.exports = {isBookTitle, isExcerpt, isISBN, isCategory, isSubcategory,isValid, isValidObjectId, isValidRequest, removeSpace}
+module.exports = {isBookTitle, isExcerpt, isISBN, isCategory, isSubcategory,isValid, isValidObjectId, isValidRequest, removeSpace, isDate}
 
 

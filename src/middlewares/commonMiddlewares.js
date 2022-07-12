@@ -3,7 +3,7 @@ const mongoose  = require('mongoose');
 const userModel = require('../models/userModel.js');
 const bookModel = require('../models/bookModel.js');
 // const reviewModel = require('../models/reviewModel.js');
-const {isBookTitle, isExcerpt, isISBN, isCategory, isSubcategory, isDate} = require('../validators/bookValidation.js');
+const {isBookTitle, isExcerpt, isISBN, isCategory, isSubcategory,isValid, isValidObjectId, isValidRequest, removeSpace, isDate} = require('../validators/bookValidation.js');
 
 const {isValidTitle, isValidName, isValidPhone, isValidEmail, 
     isValidPassword, isValidAddress, isValidStreet, isValidCity, 
@@ -22,7 +22,7 @@ const validateUser = async function(req, res, next) {
     if(!data.phone)     {msg.phoneError = "mandatory phone is missing"}
     if(!data.email)     {msg.emailError = "mandatory email is missing"}
     if(!data.password)  {msg.passwordError = "mandatory password is missing"};
-    if(Object.keys(msg).length > 0) return res.status(400).send({status:false, message:msg});
+    if(Object.keys(msg).length > 0) return res.status(400).send({status:false, message:msg});//return
 
     const invalid = {}; //checking field formats
     if(!isValidTitle(data.title))       invalid.titleError = "title is invalid"; 
@@ -35,7 +35,7 @@ const validateUser = async function(req, res, next) {
     if(data.address.street && !isValidStreet(data.address.street)) invalid.streetError = "street is invalid"; 
     if(data.address.city && !isValidCity(data.address.city)) invalid.cityError = "city is invalid"; 
     if(data.address.pincode && !isValidPincode(data.address.pincode)) invalid.pincodeError = "pincode is invalid"; 
-    if(Object.keys(invalid).length > 0) return res.status(400).send({status:false, message:invalid});
+    if(Object.keys(invalid).length > 0) return res.status(400).send({status:false, message:invalid});   //return
     
     data.title = removeSpaces(data.title);              //formating data as per standardisation
     data.name = trimAndUpperCase(data.name);
@@ -53,7 +53,7 @@ const validateUser = async function(req, res, next) {
     const num = reduceNumber(data.phone)//+91-8792518031, 8792518031
     const phoneDoc = await userModel.findOne({phone: new RegExp(num + '$')});    
     if(phoneDoc) duplicate.phoneError = `this ${data.phone} is already registered`;
-    if(Object.keys(duplicate).length > 0) return res.status(400).send({status:false, message:duplicate});
+    if(Object.keys(duplicate).length > 0) return res.status(400).send({status:false, message:duplicate});   //return
     next();
 
     }catch(error){
@@ -63,11 +63,11 @@ const validateUser = async function(req, res, next) {
 }//by-Ibrahim
 
 //validating Book Details
-const validateBooks = async function (req, res) {
+const validateBooks = async function (req, res, next) {
     try {
-        const { title, excerpt, userId, ISBN, category, subcategory } = data = req.body
+        const { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = data = req.body
 
-        if(Object.keys(data).length < 1) return res.status(400).send({status:false, message:"can't create book with empty details"});   //empty body
+        if(Object.keys(data).length <1) return res.status(400).send({status:false, message:"can't create book with empty details"});   //empty body
 
         const mandatory = {}; //checking for mandatory fields
         if(!title) mandatory.titleError = "title is mandatory";
@@ -76,7 +76,8 @@ const validateBooks = async function (req, res) {
         if(!ISBN) mandatory.ISBNError = "ISBN is mandatory";
         if(!category) mandatory.categoryError = "category is mandatory";
         if(!subcategory) mandatory.subcategoryError = "subcategory is mandatory";
-        if(Object.keys(mandatory).length > 0) return res .status(400).send({status:false, message: mandatory});
+        if(!releasedAt) mandatory.dateError = "releasedAt date is mandatory";
+        if(Object.keys(mandatory).length > 0) return res .status(400).send({status:false, message: mandatory}); //return
 
         const invalid = {}; //checking valid formats of fields
         if (!isBookTitle(title)) invalid.title = "invalid title format";
@@ -85,17 +86,17 @@ const validateBooks = async function (req, res) {
         if (!isISBN(ISBN)) invalid.ISBN = "invalid ISBN format";
         if (!isCategory(category)) invalid.category = "invalid category format";
         if (!isSubcategory(subcategory)) invalid.subcategory = "invalid subcategory format";
-        if(Object.keys(invalid).length > 0) return res .status(400).send({status:false, message: invalid});
+        if (!isDate(releasedAt)) invalid.date = "invalid releasedAt date format, write it in this format YYYY-MM-DD";
+        if(Object.keys(invalid).length > 0) return res .status(400).send({status:false, message: invalid}); //return
         
         req.body.title = removeSpaces(title);        //formatting field values
         req.body.excerpt = removeSpaces(excerpt); 
         req.body.userId = removeSpaces(userId);
         req.body.ISBN = ISBN.trim().split("-").join("");    //ISBN
         req.body.category = removeSpaces(category); 
-        req.body.subcategory = removeSpaces(subcategory); 
      
         let idDoc = await userModel.findOne({ _id: userId })    //userId
-        if(!idDoc){return res.status(404).send({status:false, message:"user not exists with this userId"})}
+        if(!idDoc){return res.status(404).send({status:false, message:"user not exists with this userId"})} //return
         
         const duplicate = {};   //checking duplicate keys
         const titleDoc = await bookModel.findOne({title:data.title});
@@ -112,45 +113,9 @@ const validateBooks = async function (req, res) {
 }//By- Ibrahim, Sujeet
 
 
-//Authentication-IK
-const authentication = function(req, res, next){
-    try {
-        const token = req.headers["x-api-key"];
-        if(!token) return res.status(401).send({status:false, message: "token is missing"});    //vald1
-
-        const decoded = jwt.verify(token, "functioup-radon28", ((err, result)=>{                //vald2
-        if(err) return res.status(401).send({status:false, message: "Invalid Token"});
-        req["decoded"] = decoded        //added this
-        next();
-        } ));
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({status:false, message: error.message});
-    }
-
-}
-
-//Authorisation-IK -------------------INCOMPLETE
-const authorisation = function(req, res, next){
-    try {
-        const paramsId = req.params;                            
-        if(!paramsId) return res.status(400).send({status:false, message: "please enter Id in path end"});  //vald1
-        if(!mongoose.Types.ObjectId.isValid(paramsId)) return res.status(400).send({staus:false, message: "enter a valid Id"}); //vald2
-
-        // const decode = jwt.verify(token, "functionup-radon28");
-        const loggedInUserId = req.decoded.userId;      //?
-
-        if(loggedInUserId !== paramsId) return res.status(403).send({status:false, message:"You are not authorised to make this request"});
-        next();
-        
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({status:false, message: error.message});        
-    }
-}
 
 
-module.exports = {validateUser, validateBooks, authentication, authorisation}
+
+module.exports = {validateUser, validateBooks}
 
 

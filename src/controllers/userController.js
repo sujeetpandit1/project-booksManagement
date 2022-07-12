@@ -29,9 +29,19 @@ const loginUser = async function(req, res){     //1.loginUser
         const user = await userModel.findOne({email:data.email, password:data.password});
         if(!user) return res.status(401).send({status:false, message:"invalid credentials, useremail or password is incorrect"});
 
-        const token = jwt.sign({userId:user._id, batch:"radon", project:"bookManagement"}, "functionup-radon28");   //expiry pending
+        // const token = jwt.sign({userId:user._id, batch:"radon", project:"bookManagement"}, "functionup-radon28");   //expiry pending
+        
+        const token = jwt.sign({userId:user._id, batch:"radon", project:"bookManagement"}, "functionup-radon28",  {expiresIn:"300s"});
+        const decode = jwt.verify(token, "functionup-radon28", (err, result)=>{
+            if(err) return undefined
+            else return result;
+        });
+        const iat = (new Date(decode.iat*1000)).toLocaleString()
+        const exp = (new Date(decode.exp*1000)).toLocaleString()
+           
+
         res.setHeader("x-api-key", token);
-        return res.status(200).send({status:false, message:"login successful", data : {token}})
+        return res.status(200).send({status:false, message:"login successful", data : {token, issuedAt:iat, expireAt:exp}})
      
     } catch (error) {
         console.log(error);
@@ -44,3 +54,4 @@ const loginUser = async function(req, res){     //1.loginUser
 
 module.exports.createUser = createUser;
 module.exports.loginUser = loginUser;
+
