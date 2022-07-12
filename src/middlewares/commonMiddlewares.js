@@ -10,7 +10,7 @@ const {isValidTitle, isValidName, isValidPhone, isValidEmail,
     isValidPincode, removeSpaces, trimAndUpperCase, reduceNumber} = require('../validators/userValidation.js');
 
 
-//validating user datils
+/*-----------VALIDATING USER DETAILS-----------------*/
 const validateUser = async function(req, res, next) {
     try{
     const data = req.body;
@@ -25,12 +25,11 @@ const validateUser = async function(req, res, next) {
     if(Object.keys(msg).length > 0) return res.status(400).send({status:false, message:msg});//return
 
     const invalid = {}; //checking field formats
-    if(!isValidTitle(data.title))       invalid.titleError = "title is invalid"; 
-    if(!isValidName(data.name))         invalid.nameError = "name is invalid"; 
-    if(!isValidPhone(data.phone))       invalid.phoneError = "phone is invalid"; 
+    if(!isValidTitle(data.title))       invalid.titleError = "Please input Mr, Mrs & Miss only"; 
+    if(!isValidName(data.name))         invalid.nameError = "Please input Valid Name"; 
+    if(!isValidPhone(data.phone))       invalid.phoneError = "Please input valid phone"; 
     if(!isValidEmail(data.email))       invalid.emailError = "email is invalid";    //review
-    if(!isValidPassword(data.password)) invalid.passwordError = "password is invalid";
-
+    if(!isValidPassword(data.password)) invalid.passwordError = "Please create strong password, Must having special charactor, numbers and atleast one upperCase";
     if(data.address && !isValidAddress(data.address)) invalid.addressError = "address is invalid"; 
     if(data.address.street && !isValidStreet(data.address.street)) invalid.streetError = "street is invalid"; 
     if(data.address.city && !isValidCity(data.address.city)) invalid.cityError = "city is invalid"; 
@@ -60,9 +59,9 @@ const validateUser = async function(req, res, next) {
         console.log(error)
         return res.status(500).send({status:false, message:error.message});
     }
-}//by-Ibrahim
+}
 
-//validating Book Details
+/*-----------VALIDATING BOOK DETAILS-----------------*/
 const validateBooks = async function (req, res, next) {
     try {
         const { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = data = req.body
@@ -80,12 +79,12 @@ const validateBooks = async function (req, res, next) {
         if(Object.keys(mandatory).length > 0) return res .status(400).send({status:false, message: mandatory}); //return
 
         const invalid = {}; //checking valid formats of fields
-        if (!isBookTitle(title)) invalid.title = "invalid title format";
-        if (!isExcerpt(excerpt)) invalid.excerpt = "invalid excerpt format";
-        if (!mongoose.Types.ObjectId.isValid(userId)) invalid.userId = "invalid userId";
-        if (!isISBN(ISBN)) invalid.ISBN = "invalid ISBN format";
-        if (!isCategory(category)) invalid.category = "invalid category format";
-        if (!isSubcategory(subcategory)) invalid.subcategory = "invalid subcategory format";
+        if (!isBookTitle(title)) invalid.title = "Please input valid title";
+        if (!isExcerpt(excerpt)) invalid.excerpt = "Please input valid excerpt";
+        if (!mongoose.Types.ObjectId.isValid(userId)) invalid.userId = "Please input valid userId";
+        if (!isISBN(ISBN)) invalid.ISBN = "Please input valid ISBN format";
+        if (!isCategory(category)) invalid.category = "Please input valid category details";
+        if (!isSubcategory(subcategory)) invalid.subcategory = "Please input valid subcategory details";
         if (!isDate(releasedAt)) invalid.date = "invalid releasedAt date format, write it in this format YYYY-MM-DD";
         if(Object.keys(invalid).length > 0) return res .status(400).send({status:false, message: invalid}); //return
         
@@ -110,7 +109,7 @@ const validateBooks = async function (req, res, next) {
         console.log(error);
         res.status(500).send({ status: false, message: error.message })
     }
-}//By- Ibrahim, Sujeet
+}
 
 
 

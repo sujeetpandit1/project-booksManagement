@@ -6,19 +6,20 @@ const {createReview, updateReview, deleteReview} = require('../controllers/revie
 const {validateUser, validateBooks} = require('../middlewares/commonMiddlewares')
 const {authentication, authorisation, authorisationUD} = require('../middlewares/auth')
 
-//user api
+
+
+/*-----------USER API-----------------*/
 router.post('/register', validateUser, createUser)
 router.post('/login', loginUser)
 
-//books api
+/*-----------BOOK API-----------------*/
 router.post('/books', authentication, validateBooks,  authorisation, createBooks)
 router.get('/books', authentication, booksByQuery)
 router.get('/books/:bookId', authentication, getBook)
 router.put('/books/:bookId', authentication, authorisationUD, updateBook)
-router.delete('/books/:bookId', authentication, authorisationUD, deleteBook)
+router.delete('/books/:bookId', authentication, authorisationUD,  deleteBook)
 
-
-//review api
+/*-----------REVIEW API-----------------*/
 router.post('/books/:bookId/review', createReview)
 router.put('/books/:bookId/review/:reviewId', updateReview)
 router.delete('/books/:bookId/review/:reviewId', deleteReview)

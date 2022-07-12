@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const userModel = require('../models/userModel.js');
 const bookModel = require('../models/bookModel.js');
 
-//Authentication-IK
+/*-----------AUTHENTICATION-----------------*/
 const authentication = function(req, res, next){
     try {
         const token = req.headers["x-api-key"];
@@ -27,7 +27,7 @@ const authentication = function(req, res, next){
 
 }
 
-//Authorisation-to createBook 
+/*-----------AUTHORISATION FOR CREATING BOOK-----------------*/
 const authorisation = function(req, res, next){      
     try {
         const userId = req.body.userId;                                              
@@ -48,7 +48,7 @@ const authorisation = function(req, res, next){
     }
 }
 
-//Authroisation for update and delete books
+/*-----------AUTHORISATION FOR UPDATE AND DELETE BOOK-----------------*/
 const authorisationUD = async function(req, res, next){      
     try {
         const bookId = req.params.bookId
@@ -57,9 +57,8 @@ const authorisationUD = async function(req, res, next){
 
         const doc = await bookModel.findById(bookId);
         if(!doc) return res.status(404).send({status:false, message:"no books found with this bookId"});
-        const bookUserId = doc.userId.toString();                                              
         
-
+        const bookUserId = doc.userId.toString();                                              
         const loggedInUserId = req.decoded.userId;      
         if(loggedInUserId !== bookUserId) return res.status(403).send({status:false, message:`user with id ${loggedInUserId} is not authorised to make changes in book of ${bookUserId}`});
         next();

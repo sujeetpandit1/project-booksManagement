@@ -1,8 +1,8 @@
 const userModel = require('../models/userModel.js');
 const jwt = require('jsonwebtoken')
 
-
-const createUser = async function(req, res){                                    //1.validateUser, 2.createUser
+/*--------------------CREATE USER-----------------------*/
+const createUser = async function(req, res){                                   
     try {
         const data = req.body
         const savedUser = await userModel.create(data)
@@ -14,7 +14,8 @@ const createUser = async function(req, res){                                    
     }
 }
 
-const loginUser = async function(req, res){     //1.loginUser
+/*--------------------LOGIN USER-----------------------*/
+const loginUser = async function(req, res){     
     try {
         const data = req.body;
         if(Object.keys(data).length === 0) return res.status(400).send({status:false, message: "enter emailId and password"})
@@ -36,7 +37,7 @@ const loginUser = async function(req, res){     //1.loginUser
             else return result;
         });
         const iat = (new Date(decode.iat*1000)).toLocaleString()
-        const exp = (new Date(decode.exp*1000)).toLocaleString()
+        const exp = (new Date(decode.exp*1001)).toLocaleString()
            
 
         res.setHeader("x-api-key", token);
