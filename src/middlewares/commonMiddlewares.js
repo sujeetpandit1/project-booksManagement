@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { default: mongoose } = require('mongoose');
+const mongoose  = require('mongoose');
 const userModel = require('../models/userModel.js');
 const bookModel = require('../models/bookModel.js');
 // const reviewModel = require('../models/reviewModel.js');
@@ -11,7 +11,7 @@ const {isValidTitle, isValidName, isValidPhone, isValidEmail,
 
 
 //validating user datils
-const validateUser = async function(req, res, next){
+const validateUser = async function(req, res, next) {
     try{
     const data = req.body;
     if(Object.keys(data).length === 0) return res.status(400).send({status: false, message: "can't create data with empty body"});

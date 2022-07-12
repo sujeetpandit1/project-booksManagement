@@ -15,12 +15,10 @@ const authentication = function(req, res, next){
         next();
         } ));
     
-
     } catch (error) {
         console.log(error);
         return res.status(500).send({status:false, message: error.message});
     }
-
 }
 
 //Authorisation-IK
@@ -30,7 +28,7 @@ const authorisation = function(req, res, next){
         if(!paramsId) return res.status(400).send({status:false, message: "please enter Id in path end"});  //vald1
         if(!mongoose.Types.ObjectId.isValid(paramsId)) return res.status(400).send({staus:false, message: "enter a valid Id"}); //vald2
 
-        // const decode = jwt.verify(token, "functionup-radon28");
+        
         const loggedInUserId = req.decoded.userId;
 
         if(loggedInUserId !== paramsId) return res.status(403).send({status:false, message:"You are not authorised to make this request"});
